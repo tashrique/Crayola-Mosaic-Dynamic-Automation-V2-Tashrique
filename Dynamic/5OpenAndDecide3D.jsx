@@ -65,7 +65,6 @@ function processLayers(layers) {
 	}
 }
 
-
 function main(folder) {
 
 

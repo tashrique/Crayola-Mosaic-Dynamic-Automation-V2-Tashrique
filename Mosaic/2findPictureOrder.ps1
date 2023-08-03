@@ -1,4 +1,4 @@
-#----------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------
 # INITILAIZE FILE NAMES
 # Read the folder path from the text file
 $textPath = Get-Content -Path ".\workingFolderPath.txt"

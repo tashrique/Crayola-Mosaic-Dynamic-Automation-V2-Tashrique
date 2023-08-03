@@ -24,7 +24,7 @@ if (!(Test-Path -Path $folderPath)) {
 # If the folder exists, write the folder path to a text file
 Write-Host "You selected: $folderPath"
 
-$outputtxt = Join-Path -Path $pwd -ChildPath "Dynamic\workingFolderPath.txt"
+$outputtxt = Join-Path -Path $pwd -ChildPath "workingFolderPath.txt"
 $folderPath | Out-File -FilePath $outputtxt
 
 #------------------------------------------------------------------
@@ -75,7 +75,6 @@ function Get-Colorfulness([string]$imagePath) {
 }
 #------------------------------------------------------------------
 # Initialize and get images
-
 $jpgFiles = Get-ChildItem -Path $folderPath -Filter "*.jpg"
 $imageData = @()
 $folderImageCount = $jpgFiles.Length
@@ -91,7 +90,8 @@ foreach ($file in $jpgFiles) {
 #Sort Images
 if (($folderImageCount - $gridImageCount) -gt 2) {
     $sortHelper = $gridImageCount + ([math]::Round(($folderImageCount - $gridImageCount) / 2))
-} else {
+}
+else {
     $sortHelper = $gridImageCount
 }
 
@@ -136,20 +136,53 @@ Write-Host "Select $gridImageCount Top Pictures: SUCCESS"
 
 
 
+#------------------------------------------------------------------
+# INITILAIZE FILE NAMES
+# Read the folder path from the text file
+$csvPath = Join-Path -Path $outputPath -ChildPath 'temp.csv'
+$data = Import-Csv -Path $csvPath
+$data = $data | Select-Object -Skip 1
+
+#------------------------------------------------------------------
+# ADD COLUMN TO SHEET FOR RGB
+$outputCsvPath = Join-Path -Path $folderPath -ChildPath "Output\MosaicColorData.csv"
+
+$newData = @()
+foreach ($item in $data) {
+
+    $originalFilePath = $item.'File path'
+    $pythonOutput = & python "3get_dominant_color.py" "$originalFilePath"
+    $colors = $pythonOutput.Trim("[]")
+    $dominant_color, $complementary_color = $colors -split ';'
+    $R, $G, $B = $dominant_color -split ','
+    $cR, $cG, $cB = $complementary_color -split ','
+
+    # Create a copy of the item and add the new "Dominant" and "Complementary" properties
+    $newItem = $item | Add-Member -MemberType NoteProperty -Name "R" -Value $R -PassThru
+    $newItem = $newItem | Add-Member -MemberType NoteProperty -Name "G" -Value $G -PassThru
+    $newItem = $newItem | Add-Member -MemberType NoteProperty -Name "B" -Value $B -PassThru
+    $newItem = $newItem | Add-Member -MemberType NoteProperty -Name "cR" -Value $cR -PassThru
+    $newItem = $newItem | Add-Member -MemberType NoteProperty -Name "cG" -Value $cG -PassThru
+    $newItem = $newItem | Add-Member -MemberType NoteProperty -Name "cB" -Value $cB -PassThru
+
+    # Add the new item to the new data array
+    $newData += $newItem
+
+
+    $OfileName = Split-Path -Path $originalFilePath -Leaf
+    Write-Host "$OfileName : OK"
+
+}
+
+
+# # Export the new data to a CSV file
+$newData | Export-Csv -Path $outputCsvPath -NoTypeInformation
+# $sortCSV = Import-Csv -Path $outputCsvPath
+Write-Host "RGB added to CSV: SUCCESS"
+#------------------------------------------------------------------
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-# & cscript.exe '.\4runNextStep.vbs'
+& cscript.exe '.\4runNextStep.vbs'
 
