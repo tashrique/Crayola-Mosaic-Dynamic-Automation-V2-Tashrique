@@ -8,6 +8,7 @@ if (!(Test-Path -Path $batFile)) {
 
 # Get the ORDERS IN PROGRESS directory
 $parentDir = Split-Path $PSScriptRoot -Parent
+$parentDir = Split-Path $parentDir -Parent
 $outputDir = Join-Path $parentDir 'Orders in Progress\'
 if (!(Test-Path -Path $outputDir)) {
     Write-Output "Directory $outputDir does not exist."

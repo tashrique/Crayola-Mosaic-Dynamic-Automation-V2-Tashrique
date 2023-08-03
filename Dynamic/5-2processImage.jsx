@@ -217,8 +217,7 @@
         var docRef = app.activeDocument;
         var layerRef = docRef.activeLayer;
 
-        layerRef.resize(85, 85, AnchorPosition.MIDDLECENTER);
-
+        layerRef.resize(92, 92, AnchorPosition.MIDDLECENTER);
 
         // convert color values to a SolidColor object
         var colorToSet = new SolidColor();
@@ -276,7 +275,7 @@
         app.preferences.rulerUnits = Units.PERCENT;
 
         // Scale the layer by 115%
-        layerRef.resize(115, 115, AnchorPosition.MIDDLECENTER);
+        layerRef.resize(107, 107, AnchorPosition.MIDDLECENTER);
 
         app.preferences.rulerUnits = startRulerUnits;
 
@@ -625,17 +624,30 @@
         var rComp = 255 - colors.R;
         var gComp = 255 - colors.G;
         var bComp = 255 - colors.B;
-
+    
         // Convert to HSV
         var hsv = RGBtoHSV(rComp, gComp, bComp);
-
+    
+        // If the hue is in the cyan range, shift it by a certain amount
+        if (hsv[0] > 5/12 && hsv[0] < 7/12) {
+            // Shift the hue value by 1/12 (30 degrees) to skip the cyan area
+            // You can modify this shift amount to get the desired effect
+            hsv[0] += 1/12;
+    
+            // Make sure the hue stays within the 0-1 range
+            if (hsv[0] > 1) {
+                hsv[0] -= 1;
+            }
+        }
+    
         // Make more PASTELLLLLLLLLLLLLLL!
         hsv[2] = Math.min(1, hsv[2] + 0.6);
         hsv[1] = Math.max(0, hsv[1]);
-
+    
         var rgb = HSVtoRGB(hsv[0], hsv[1], hsv[2]);
         return { R: Math.round(rgb[0]), G: Math.round(rgb[1]), B: Math.round(rgb[2]) };
     }
+    
 }
 
 
