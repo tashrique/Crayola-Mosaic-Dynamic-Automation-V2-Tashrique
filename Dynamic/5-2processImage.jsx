@@ -483,7 +483,6 @@
 
         // Create a new folder path
         var newFolderPath = new Folder(path + "/Working Folder");
-
         // Check if the folder exists, if not create it
         if (!newFolderPath.exists) {
             newFolderPath.create();
@@ -501,6 +500,17 @@
         jpgSaveOptions.quality = 12; // Maximum quality
         doc.saveAs(file, jpgSaveOptions, true, Extension.LOWERCASE);
 
+
+        // Create a new folder path
+        var newFolderPath1 = new Folder(path + "/Crayola Folder");
+        // Check if the folder exists, if not create it
+        if (!newFolderPath1.exists) {
+            newFolderPath1.create();
+        }
+        // Define the new file path
+        var newFilePath1 = new File(newFolderPath1 + "/" + doc.name);
+        var file1 = new File(newFilePath1);
+        doc.saveAs(file1, jpgSaveOptions, true, Extension.LOWERCASE);
 
         // Close the document without saving changes (since we've just saved it)
         doc.close(SaveOptions.DONOTSAVECHANGES);

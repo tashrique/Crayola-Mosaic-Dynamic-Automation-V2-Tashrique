@@ -44,7 +44,7 @@ $button.BackColor = [System.Drawing.Color]::LightGreen
 $mainForm.Controls.Add($button)
 
 $scriptPath = $PSScriptRoot
-$logo = Join-Path $scriptPath "\Dynamic\Artkive_GC.png"
+$logo = Join-Path $scriptPath "\Artkive_GC.png"
 
 
 # Create a PictureBox control

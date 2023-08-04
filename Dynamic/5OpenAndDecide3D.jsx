@@ -65,6 +65,12 @@ function processLayers(layers) {
 	}
 }
 
+//Get crayola pictures
+function getCrayola() {
+
+}
+
+
 function main(folder) {
 
 
@@ -76,7 +82,7 @@ function main(folder) {
 		}
 
 		var scriptFolder = new File($.fileName).parent;
-		var templateFile = new File(scriptFolder + "/template.psd");
+		var templateFile = new File(scriptFolder + "/template25.psd");
 		var newDoc = app.open(templateFile);
 		app.activeDocument = newDoc;
 	}
@@ -84,71 +90,154 @@ function main(folder) {
 	if (folder.exists) {
 		var files = folder.getFiles();
 
-
-		// Process each photo and save in Working Folder
+		//MOSAIC Automation
 		{
-			for (var i = 0; i < files.length; i++) {
-				var file = files[i];
+			// Process each photo and save in Working Folder
+			{
+				for (var i = 0; i < files.length; i++) {
+					var file = files[i];
 
-				if (file instanceof File && file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-					app.open(file);
-					// Run processImages for each image
-					{
-						var processScript = File(scriptFolder + "/5-2processImage.jsx");
-						if (processScript.exists) {
-							// Setting argument
-							$.evalFile(processScript);
-						} else {
-							alert("Script file does not exist.");
+					if (file instanceof File && file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+						app.open(file);
+						// Run processImages for each image
+						{
+							var processScript = File(scriptFolder + "/5-2processImage.jsx");
+							if (processScript.exists) {
+								// Setting argument
+								$.evalFile(processScript);
+							} else {
+								alert("Script file does not exist.");
+							}
 						}
 					}
 				}
 			}
-		}
 
-		//Refresh images
-		{
-			app.activeDocument = newDoc;
-			refreshLinkedSmartObjects(newDoc);
-		}
-
-		// Save the document
-		{
-			var folder = new Folder(folderPathRaw);
-			var lastPart = folder.name;
-
-			var date = new Date();
-			var formattedDate = (date.getMonth() + 1) + "-" + date.getDate(); // Months are 0-based in JavaScript
-			var outputFolder = new File($.fileName).parent.parent;
-
-			var saveFolder = new Folder(outputFolder + "/000 Output " + formattedDate); // Specify the folder path
-			if (!saveFolder.exists) {
-				saveFolder.create(); // If the folder doesn't exist, create it
+			//Refresh images
+			{
+				app.activeDocument = newDoc;
+				refreshLinkedSmartObjects(newDoc);
 			}
 
-			var fileLocation = saveFolder + "/" + lastPart;
-			var saveFile = new File(fileLocation); // Specify the file name
-			saveAsPSD(saveFile);
+			// Save the document
+			{
+				var folder = new Folder(folderPathRaw);
+				var lastPart = folder.name + " - MOSAIC";
+
+				var date = new Date();
+				var formattedDate = (date.getMonth() + 1) + "-" + date.getDate(); // Months are 0-based in JavaScript
+				var outputFolder = new File($.fileName).parent.parent.parent;
+
+				var saveFolder = new Folder(outputFolder + "/000 Output " + formattedDate); // Specify the folder path
+				if (!saveFolder.exists) {
+					saveFolder.create(); // If the folder doesn't exist, create it
+				}
+
+				var fileLocation = saveFolder + "/" + lastPart;
+				var saveFile = new File(fileLocation); // Specify the file name
+				saveAsPSD(saveFile);
+			}
+
+			//Open generated PSD
+			{
+				var reOpen = new File(fileLocation + ".psd");
+				var newDoc = app.open(reOpen);
+			}
+
+			// Rasterize linked layers
+			{
+				processLayers(app.activeDocument.layers);
+			}
+
+
+			// Save and close the document
+			{
+				app.activeDocument.save();
+				app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+			}
 		}
 
-		//Open generated PSD
+
+
+
+
+
+
+
+
+
+
+
+
+
+		/*-----------------START CRAYOLA AUTOMATION-------------------- */
+
+		// Initiliaze
 		{
-			var reOpen = new File(fileLocation + ".psd");
-			var newDoc = app.open(reOpen);
+
+			while (app.documents.length > 0) {
+				activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+			}
+
+			var scriptFolder = new File($.fileName).parent;
+			var templateFile = new File(scriptFolder + "/template9.psd");
+			var newDoc = app.open(templateFile);
+			app.activeDocument = newDoc;
+
+
+			/*GET TOP 9 IMAGES */
+			var commandToRun = "./Dynamic/runCrayola.bat";
+			var myBat = File(commandToRun);
+			myBat.execute();
+
+
+
+
+
+			//Refresh images
+			{
+				app.activeDocument = newDoc;
+				refreshLinkedSmartObjects(newDoc);
+			}
+
+			// Save the document
+			{
+				var folder = new Folder(folderPathRaw);
+				var lastPart = folder.name + " - CRAYOLA";
+
+				var date = new Date();
+				var formattedDate = (date.getMonth() + 1) + "-" + date.getDate(); // Months are 0-based in JavaScript
+				var outputFolder = new File($.fileName).parent.parent.parent;
+
+				var saveFolder = new Folder(outputFolder + "/000 Output " + formattedDate); // Specify the folder path
+				if (!saveFolder.exists) {
+					saveFolder.create(); // If the folder doesn't exist, create it
+				}
+
+				var fileLocation = saveFolder + "/" + lastPart;
+				var saveFile = new File(fileLocation); // Specify the file name
+				saveAsPSD(saveFile);
+			}
+
+			//Open generated PSD
+			{
+				var reOpen = new File(fileLocation + ".psd");
+				var newDoc = app.open(reOpen);
+			}
+
+			// Rasterize linked layers
+			{
+				processLayers(app.activeDocument.layers);
+			}
+
+
+			// Save and close the document
+			{
+				app.activeDocument.save();
+				app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+			}
+
 		}
-
-		// Rasterize linked layers
-		{
-			processLayers(app.activeDocument.layers);
-		}
-
-
-		// Save and close the document
-		{
-			app.activeDocument.save();
-			app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
-		}
-
 
 
 	} else {
