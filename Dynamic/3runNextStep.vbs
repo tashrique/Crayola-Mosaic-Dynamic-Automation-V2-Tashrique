@@ -6,7 +6,7 @@ Set fso = CreateObject("Scripting.FileSystemObject")
 currentDirectory = fso.GetParentFolderName(WScript.ScriptFullName)
 
 Set appRef = CreateObject("Photoshop.Application")
-javaScriptFile = currentDirectory & "\5OpenAndDecide3D.jsx"
+javaScriptFile = currentDirectory & "\4OpenAndDecide3D.jsx"
 
 ' Print the path
 WScript.Echo javaScriptFile

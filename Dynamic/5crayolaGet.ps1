@@ -87,13 +87,15 @@ if ($folderImageCount -lt $gridImageCount) {
 # Get the colorfulness data
 foreach ($file in $jpgFiles) {
     $colorfulness, $white, $contrast = Get-Colorfulness -imagePath $file.FullName
+    Write-Host $file
     $imageData += , @($file.FullName, $colorfulness, $white, $contrast)
 }
 
 # Sort by colorfulness and select top 9
 $top = $imageData | Sort-Object -Property @{Expression = { $_[1] }; Ascending = $false } | Select-Object -First $gridImageCount
+Write-Host $top
 
-# Delete all other images
+# # Delete all other images
 $jpgFiles | Where-Object { $top.FullName -notcontains $_.FullName } | ForEach-Object { Remove-Item $_.FullName -Force }
 
 # Generate a list of final names and shuffle them
@@ -104,11 +106,10 @@ $finalNames = $finalNames | Sort-Object { Get-Random }
 for ($i = 0; $i -lt $gridImageCount; $i++) {
     $oldImagePath = $top[$i][0]
     $newImageName = $finalNames[$i]
-    $newImagePath = [System.IO.Path]::Combine([System.IO.Path]::GetDirectoryName($oldImagePath), $newImageName)
-    Rename-Item -Path $oldImagePath -NewName $newImagePath -Force
+    # Only specify the new file name, not the full path
+    Rename-Item -Path $oldImagePath -NewName $newImageName -Force
 }
 
 Write-Host "Select $gridImageCount Top Pictures and Rename: SUCCESS"
-
 #------------------------------------------------------------------#
   

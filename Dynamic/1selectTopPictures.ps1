@@ -1,13 +1,8 @@
-#-------------------------------------------------------#
-# 9 = 3x3
-# 16 = 4x4
-# 25 = 5x5
 $gridImageCount = 25
 
 Add-Type -AssemblyName System.Drawing
 Add-Type -AssemblyName System.Windows.Forms
 $print = New-Object -ComObject Wscript.Shell
-
 
 # Get the path to the temp.txt file
 $tempFile = Join-Path $PSScriptRoot "temp.txt"
@@ -25,16 +20,11 @@ if (!(Test-Path -Path $folderPath)) {
     exit
 }
 
-
 # If the folder exists, write the folder path to a text file
 Write-Host "You selected: $folderPath"
 
 $outputtxt = Join-Path -Path $pwd -ChildPath "workingFolderPath.txt"
 $folderPath | Out-File -FilePath $outputtxt
-
-
-#------------------------------------------------------------------#
-#CHECK IF CORNERS ARE WHITE - ROUND PICTURE?
 
 #------------------------------------------------------------------#
 # Get colorfulness, white percentage and contrast
@@ -42,7 +32,6 @@ function Get-Colorfulness([string]$imagePath) {
 
     # Import image as bitmap 
     $bmp = [System.Drawing.Bitmap]::FromFile($imagePath)
-    #Write-Host "Image dimensions: $($bmp.Width)x$($bmp.Height)"
 
     # Initialize variables
     $totalColorfulness = 0
@@ -50,7 +39,6 @@ function Get-Colorfulness([string]$imagePath) {
     $whitePixels = 0
     $whiteThreshold = 200
     $intensities = New-Object System.Collections.ArrayList
-
 
     # Go through the pixels in the image
     for ($x = 120; $x -lt $bmp.Width - 120; $x += 500) {
@@ -96,9 +84,6 @@ function Get-Colorfulness([string]$imagePath) {
     return $avgColorfulness, $whitePixelsPercentage, $contrast
 }
 
-
-
-
 #------------------------------------------------------------------#
 # Initialize and get images
 
@@ -113,7 +98,6 @@ foreach ($file in $jpgFiles) {
     $colorfulness, $white, $contrast = Get-Colorfulness -imagePath $file.FullName
     $imageData += , @($file.FullName, $colorfulness, $white, $contrast)
 }
-
 
 #------------------------------------------------------------------#
 #Sort Images
@@ -131,7 +115,6 @@ $topWhite = $whiteSort | Select-Object -First $sortHelper
 # Second Sort by colorfulness and eliminate all of the unnecessary images
 $colorSort = $topWhite | Sort-Object -Property @{Expression = { $_[1] }; Ascending = $false }
 $top = $colorSort | Select-Object -First $gridImageCount
-
 
 #------------------------------------------------------------------#
 # Define 'Output' folder in the selected directory
@@ -159,12 +142,8 @@ $firstRow = New-Object PSObject -Property @{
 $dataToExport.Add($firstRow) | Out-Null
 
 # Output the file paths of the top most images to the console, copy them to 'Output' folder, and add their data to the ArrayList
-#Write-Host "Top $gridImageCount Most Colorful Images:"
 foreach ($item in $top) {
-    #Write-Host "File path: $($item[0]) | Colorfulness: $($item[1]) | White: $($item[2]) | contrast: $($item[3])"
     Copy-Item -Path $item[0] -Destination $outputPath
-    
-    # Create a PSObject with the image's data and add it to the ArrayList
     $row = New-Object PSObject -Property @{
         "File path"    = $item[0]
         "Colorfulness" = $item[1]
@@ -179,19 +158,14 @@ $dataToExport | Export-Csv -Path (Join-Path -Path $outputPath -ChildPath 'temp.c
 Write-Host "Select $gridImageCount Top Pictures: SUCCESS"
 
 
-    
-# Execute findPictureOrder.ps1 script
-$scriptPath = ".\2findPictureOrder.ps1"
-$scriptPath1 = ".\2-1FixedPositioning.ps1"
-
-
-if (Test-Path $scriptPath1) {
-    & $scriptPath1
+$scriptPath = ".\2FixedPositioning.ps1"
+if (Test-Path $scriptPath) {
+    & $scriptPath
 }
 else {
-    Write-Host "1findPictureOrder.ps1 does not exist in the directory $scriptPath1"
+    Write-Host "1findPictureOrder.ps1 does not exist in the directory $scriptPath"
 }
 #------------------------------------------------------------------#
-#END OF SELECT TOP
+
 
 

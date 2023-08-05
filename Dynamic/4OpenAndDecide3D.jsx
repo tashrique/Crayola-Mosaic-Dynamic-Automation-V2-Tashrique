@@ -6,10 +6,11 @@
 	var folderPath = txtFile.read();
 	txtFile.close();
 	var folderPath = folderPath.replace(/\\/g, "/");
-	folderPathRaw = folderPath.replace(/(\r\n|\n|\r)/gm, "");
-	folderPathOk = folderPathRaw + "/Output";
+	var folderPathRaw = folderPath.replace(/(\r\n|\n|\r)/gm, "");
+	var folderPathOk = folderPathRaw + "/Output";
 	var folder = new Folder(folderPathOk);
 }
+
 // Recursive function to update linked smart objects
 function refreshLinkedSmartObjects(layerSet) {
 	for (var i = 0; i < layerSet.layers.length; i++) {
@@ -31,6 +32,7 @@ function refreshLinkedSmartObjects(layerSet) {
 		}
 	}
 }
+
 //Save as PSD
 function saveAsPSD(saveFile) {
 	var psdSaveOptions = new PhotoshopSaveOptions();
@@ -40,6 +42,7 @@ function saveAsPSD(saveFile) {
 	app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 
 }
+
 // Rasterize linked layers
 function processLayers(layers) {
 	for (var i = 0; i < layers.length; i++) {
@@ -65,12 +68,6 @@ function processLayers(layers) {
 	}
 }
 
-//Get crayola pictures
-function getCrayola() {
-
-}
-
-
 function main(folder) {
 
 
@@ -90,36 +87,32 @@ function main(folder) {
 	if (folder.exists) {
 		var files = folder.getFiles();
 
-		//MOSAIC Automation
+		/*-----------------START MOSAIC AUTOMATION-------------------- */
 		{
 			// Process each photo and save in Working Folder
-			{
-				for (var i = 0; i < files.length; i++) {
-					var file = files[i];
+			for (var i = 0; i < files.length; i++) {
+				var file = files[i];
 
-					if (file instanceof File && file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-						app.open(file);
-						// Run processImages for each image
-						{
-							var processScript = File(scriptFolder + "/5-2processImage.jsx");
-							if (processScript.exists) {
-								// Setting argument
-								$.evalFile(processScript);
-							} else {
-								alert("Script file does not exist.");
-							}
+				if (file instanceof File && file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
+					app.open(file);
+					// Run processImages for each image
+					{
+						var processScript = File(scriptFolder + "/4x2processImage.jsx");
+						if (processScript.exists) {
+							// Setting argument
+							$.evalFile(processScript);
+						} else {
+							alert("Script file does not exist.");
 						}
 					}
 				}
 			}
-
 			//Refresh images
 			{
 				app.activeDocument = newDoc;
 				refreshLinkedSmartObjects(newDoc);
 			}
-
-			// Save the document
+			// Save the document as PSD
 			{
 				var folder = new Folder(folderPathRaw);
 				var lastPart = folder.name + " - MOSAIC";
@@ -137,19 +130,15 @@ function main(folder) {
 				var saveFile = new File(fileLocation); // Specify the file name
 				saveAsPSD(saveFile);
 			}
-
 			//Open generated PSD
 			{
 				var reOpen = new File(fileLocation + ".psd");
 				var newDoc = app.open(reOpen);
 			}
-
 			// Rasterize linked layers
 			{
 				processLayers(app.activeDocument.layers);
 			}
-
-
 			// Save and close the document
 			{
 				app.activeDocument.save();
@@ -157,38 +146,35 @@ function main(folder) {
 			}
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 		/*-----------------START CRAYOLA AUTOMATION-------------------- */
-
-		// Initiliaze
 		{
+			// Initiliaze
+			{
 
-			while (app.documents.length > 0) {
-				activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+				while (app.documents.length > 0) {
+					activeDocument.close(SaveOptions.DONOTSAVECHANGES);
+				}
+
+				var scriptFolder = new File($.fileName).parent;
+				var templateFile = new File(scriptFolder + "/template9.psd");
+				var newDoc = app.open(templateFile);
+				app.activeDocument = newDoc;
 			}
 
-			var scriptFolder = new File($.fileName).parent;
-			var templateFile = new File(scriptFolder + "/template9.psd");
-			var newDoc = app.open(templateFile);
-			app.activeDocument = newDoc;
+			//Put images in the right format top pictures , 01-09
+			{
+			var ps1Path = "5crayolaGet.ps1";
+			var command = 'powershell.exe -ExecutionPolicy Unrestricted -File "' + ps1Path + '"';
+			var result = system.callSystem(command);
 
+			alert("PowerShell script finished with result: " + result);
+			}
 
-			/*GET TOP 9 IMAGES */
-			var commandToRun = "./Dynamic/runCrayola.bat";
-			var myBat = File(commandToRun);
-			myBat.execute();
+			// /*GET TOP 9 IMAGES */
+			// var commandToRun = "./4x3runCrayola.bat";
+			// var myBat = File(commandToRun);
+			// myBat.execute();
+			// $.sleep(6000); // Delay for 5 seconds
 
 
 
@@ -199,7 +185,6 @@ function main(folder) {
 				app.activeDocument = newDoc;
 				refreshLinkedSmartObjects(newDoc);
 			}
-
 			// Save the document
 			{
 				var folder = new Folder(folderPathRaw);
@@ -218,25 +203,20 @@ function main(folder) {
 				var saveFile = new File(fileLocation); // Specify the file name
 				saveAsPSD(saveFile);
 			}
-
 			//Open generated PSD
 			{
 				var reOpen = new File(fileLocation + ".psd");
 				var newDoc = app.open(reOpen);
 			}
-
 			// Rasterize linked layers
 			{
 				processLayers(app.activeDocument.layers);
 			}
-
-
 			// Save and close the document
 			{
 				app.activeDocument.save();
 				app.activeDocument.close(SaveOptions.DONOTSAVECHANGES);
 			}
-
 		}
 
 
@@ -244,6 +224,4 @@ function main(folder) {
 		alert("Output folder does not exist");
 	}
 }
-
-
 main(folder);

@@ -86,12 +86,12 @@
     function runWhitePercentage() {
         // Run getWhitePercentage for each image
 
-        var processScript = File(scriptFolder + "/5-1getWhitePercentage.jsx");
+        var processScript = File(scriptFolder + "/4x1getWhitePercentage.jsx");
         if (processScript.exists) {
             // Setting argument
             var whiteness = $.evalFile(processScript);
         } else {
-            alert("getWhitePercentage.jsx script file does not exist.");
+            alert("4x1getWhitePercentage.jsx script file does not exist.");
         }
 
         return whiteness;
@@ -283,21 +283,6 @@
         var bounds = [0, 0, docRef.width, docRef.height]; // this is the top, left, bottom and right points
         docRef.crop(bounds);
     }
-    // Selects the subject of the active layer that's it
-    function selectSubject() {
-        try {
-            var idautoCutout = stringIDToTypeID("autoCutout");
-            var desc01 = new ActionDescriptor();
-            var idsampleAllLayers = stringIDToTypeID("sampleAllLayers");
-            desc01.putBoolean(idsampleAllLayers, false);
-            executeAction(idautoCutout, desc01, DialogModes.NO);
-
-            return 1;
-        }
-        catch (e) {
-            return 0;
-        }
-    }
     // Mask selected subject 
     function maskSelectedSubject() {
         // Mask selected subject 
@@ -478,6 +463,8 @@
     }
     //Save and close
     function savePhoto() {
+
+        //---------------------------------------------------------------------
         var path = new File($.fileName).parent;
         var doc = app.activeDocument;
 
@@ -490,29 +477,31 @@
 
         // Define the new file path
         var newFilePath = new File(newFolderPath + "/" + doc.name);
-
-        // doc.trim(TrimType.TRANSPARENT);
         var file = new File(newFilePath);
+
+        //Settings for JPG
         var jpgSaveOptions = new JPEGSaveOptions();
         jpgSaveOptions.embedColorProfile = true;
         jpgSaveOptions.formatOptions = FormatOptions.STANDARDBASELINE;
         jpgSaveOptions.matte = MatteType.NONE;
         jpgSaveOptions.quality = 12; // Maximum quality
+
         doc.saveAs(file, jpgSaveOptions, true, Extension.LOWERCASE);
 
-
+//---------------------------------------------------------------------
         // Create a new folder path
         var newFolderPath1 = new Folder(path + "/Crayola Folder");
         // Check if the folder exists, if not create it
         if (!newFolderPath1.exists) {
             newFolderPath1.create();
         }
+
         // Define the new file path
-        var newFilePath1 = new File(newFolderPath1 + "/" + doc.name);
+        var newFilePath1 = new File(newFolderPath1 + "/temp" + doc.name);
         var file1 = new File(newFilePath1);
         doc.saveAs(file1, jpgSaveOptions, true, Extension.LOWERCASE);
 
-        // Close the document without saving changes (since we've just saved it)
+        // Close 
         doc.close(SaveOptions.DONOTSAVECHANGES);
 
     }
@@ -546,45 +535,7 @@
         desc2006.putObject(idT, idLyr, desc2007);
         executeAction(idsetd, desc2006, DialogModes.NO);
     }
-    // Pastel color Presents
-    var presets = [
-        { R: 255, G: 99, B: 146 },
-        { R: 255, G: 228, B: 94 },
-        { R: 255, G: 99, B: 146 },
-        { R: 217, G: 237, B: 146 },
-        { R: 221, G: 161, B: 94 },
-        { R: 242, G: 186, B: 201 },
-        { R: 186, G: 215, B: 242 }
-    ];
-    // Initialize copy of presets
-    var presetsCopy = presets.slice();
-    // Get color for BG from list
-    function getComplementaryColor(colors) {
-        var minDifference = Number.MAX_VALUE;
-        var complementaryColor = null;
-        var complementaryIndex = null;
-
-        for (var i = 0; i < presetsCopy.length; i++) {
-            var preset = presetsCopy[i];
-            var difference = Math.sqrt(
-                Math.pow(Number(colors.cR) - preset.R, 2) +
-                Math.pow(Number(colors.cG) - preset.G, 2) +
-                Math.pow(Number(colors.cB) - preset.B, 2)
-            );
-
-            if (difference < minDifference) {
-                minDifference = difference;
-                complementaryColor = preset;
-                complementaryIndex = i;
-            }
-        }
-        // Remove the chosen color from the copy of the presets
-        if (complementaryColor !== null) {
-            presetsCopy.splice(complementaryIndex, 1);
-        }
-
-        return complementaryColor;
-    }
+    //Convert RGB to HSV and vice versa
     function RGBtoHSV(r, g, b) {
         r /= 255, g /= 255, b /= 255;
 
@@ -630,34 +581,34 @@
 
         return [r * 255, g * 255, b * 255];
     }
+    //Get complementary color
     function getPastelComplement(colors) {
         var rComp = 255 - colors.R;
         var gComp = 255 - colors.G;
         var bComp = 255 - colors.B;
-    
+
         // Convert to HSV
         var hsv = RGBtoHSV(rComp, gComp, bComp);
-    
+
         // If the hue is in the cyan range, shift it by a certain amount
-        if (hsv[0] > 5/12 && hsv[0] < 7/12) {
+        if (hsv[0] > 5 / 12 && hsv[0] < 7 / 12) {
             // Shift the hue value by 1/12 (30 degrees) to skip the cyan area
             // You can modify this shift amount to get the desired effect
-            hsv[0] += 1/12;
-    
+            hsv[0] += 1 / 12;
+
             // Make sure the hue stays within the 0-1 range
             if (hsv[0] > 1) {
                 hsv[0] -= 1;
             }
         }
-    
+
         // Make more PASTELLLLLLLLLLLLLLL!
         hsv[2] = Math.min(1, hsv[2] + 0.6);
         hsv[1] = Math.max(0, hsv[1]);
-    
+
         var rgb = HSVtoRGB(hsv[0], hsv[1], hsv[2]);
         return { R: Math.round(rgb[0]), G: Math.round(rgb[1]), B: Math.round(rgb[2]) };
     }
-    
 }
 
 
@@ -680,10 +631,6 @@ function main() {
 
         if (whiteness > 25) {
             dltBG();
-
-            // var commandToRun = new File("./runComplementary.bat");
-            // commandToRun.execute();
-
             var colors = getColorsFromCSV();
             var complementaryColor = getPastelComplement(colors);
             zoomOutandSetBG(complementaryColor);
@@ -697,8 +644,6 @@ function main() {
         savePhoto();
     }
 }
-
-
 main();
 
 

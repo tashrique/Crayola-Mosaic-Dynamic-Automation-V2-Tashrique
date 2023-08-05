@@ -61,7 +61,7 @@ $newData = @()
 foreach ($item in $data) {
 
     $originalFilePath = $item.'File path'
-    $pythonOutput = & python "3get_dominant_color.py" "$originalFilePath"
+    $pythonOutput = & python "2x1get_dominant_color.py" "$originalFilePath"
     $colors = $pythonOutput.Trim("[]")
     $dominant_color, $complementary_color = $colors -split ';'
     $R, $G, $B = $dominant_color -split ','
@@ -88,4 +88,4 @@ $newData | Export-Csv -Path $outputCsvPath -NoTypeInformation
 Write-Host "RGB added to CSV: SUCCESS"
 #------------------------------------------------------------------------------------#
 
-& cscript.exe '.\4runNextStep.vbs'
+& cscript.exe '.\3runNextStep.vbs'
