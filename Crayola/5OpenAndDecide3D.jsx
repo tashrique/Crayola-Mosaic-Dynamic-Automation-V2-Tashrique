@@ -116,11 +116,11 @@ function main(folder) {
 		// Save the document
 		{
 			var folder = new Folder(folderPathRaw);
-			var lastPart = folder.name;
+			var lastPart = folder.name + " - CRAYOLA";
 
 			var date = new Date();
 			var formattedDate = (date.getMonth() + 1) + "-" + date.getDate(); // Months are 0-based in JavaScript
-			var outputFolder = new File($.fileName).parent.parent;
+			var outputFolder = new File($.fileName).parent.parent.parent;
 
 			var saveFolder = new Folder(outputFolder + "/000 Output " + formattedDate); // Specify the folder path
 			if (!saveFolder.exists) {

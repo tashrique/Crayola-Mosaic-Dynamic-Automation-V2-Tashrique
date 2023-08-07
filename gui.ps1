@@ -60,7 +60,7 @@ $mainForm.Controls.Add($logoPictureBox)
 $scriptPath = $PSScriptRoot
 $batchFile1 = Join-Path $scriptPath "\Mosaic\00000 Start Here.bat"
 $batchFile2 = Join-Path $scriptPath "\Crayola\00000 Start Here.bat"
-$batchFile3 = Join-Path $scriptPath "\Dynamic\00000 Start Here.bat"
+$batchFile3 = Join-Path $scriptPath "\Both.bat"
 
 $button.Add_Click({
         if ($radioButton1.Checked) {
