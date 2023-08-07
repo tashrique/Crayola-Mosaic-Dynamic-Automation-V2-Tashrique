@@ -1,1 +1,0 @@
-& cscript.exe '.\finalize.vbs'

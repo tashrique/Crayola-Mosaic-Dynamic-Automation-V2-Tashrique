@@ -46,7 +46,6 @@ $mainForm.Controls.Add($button)
 $scriptPath = $PSScriptRoot
 $logo = Join-Path $scriptPath "\Artkive_GC.png"
 
-
 # Create a PictureBox control
 $logoPictureBox = New-Object System.Windows.Forms.PictureBox
 $logoPictureBox.Location = New-Object System.Drawing.Point(250, 40) # Adjust the location as needed
