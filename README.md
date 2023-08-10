@@ -1,5 +1,7 @@
-###Dynamic Mosaic Automation Tool v2 Artkive
+Dynamic Mosaic Automation Tool v2 Artkive
 by Tashrique Ahmed
+
+
 Description
 This tool automates the creation of photo mosaics. It takes in a source image and a directory of tile images, then generates a mosaic by arranging and resizing the tiles to reconstruct the source image.
 
