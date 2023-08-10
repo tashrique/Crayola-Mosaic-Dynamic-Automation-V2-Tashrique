@@ -1,4 +1,4 @@
-Dynamic Mosaic Automation Tool v2 Artkive
+**Dynamic Mosaic Automation Tool v2 Artkive**
 by Tashrique Ahmed
 
 
@@ -25,7 +25,7 @@ Copy code
 python mosaic.py --source image.jpg --tiles tiles/
 This will generate a mosaic called mosaic.jpg using the image image.jpg as the source and the images in tiles/ as the tile set.
 
-Credits
-Created by [Your Name]
-
-Let me know if you would like me to explain or expand on any part of this README template!
+**Credits**
+Created by Tashrique Ahmed
+Under the supervision of Cipriano Taylor
+The Kive Company
