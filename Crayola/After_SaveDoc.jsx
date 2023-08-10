@@ -3,7 +3,7 @@ function saveInNewFormat(doc) {
     var filePath = doc.path;
     var tname = doc.name;
     app.activeDocument = doc;
-    
+
     // Extract the original file name without the extension
     var originalFileName = doc.name.replace(/\..+$/, '');
 
@@ -25,14 +25,31 @@ function saveInNewFormat(doc) {
     jpgSaveOptions.matte = MatteType.NONE;
     jpgSaveOptions.quality = 12; // Maximum quality
     doc.saveAs(newJpgFile, jpgSaveOptions, true, Extension.LOWERCASE);
-    
+
     // Delete the original file
     doc.close(SaveOptions.DONOTSAVECHANGES);
     var originalFile = new File(filePath + '/' + tname);
     originalFile.remove();
+
+    app.open(newJpgFile);
 }
+
+
 
 // Loop over all open documents
 for (var i = app.documents.length - 1; i >= 0; i--) {
-    saveInNewFormat(app.documents[i]);
+    var currentDocument = app.documents[i];
+    saveInNewFormat(currentDocument);
+
+}
+
+
+
+//Run Frame Script
+var scriptFolder = new File($.fileName).parent;
+var processScript = File(scriptFolder + "/SaveDocumentsAndFrameTemplate.jsx");
+if (processScript.exists) {
+    $.evalFile(processScript);
+} else {
+    alert("Script file does not exist.");
 }
