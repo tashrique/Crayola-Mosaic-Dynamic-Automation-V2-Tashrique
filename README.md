@@ -8,8 +8,9 @@ This tool automates the creation of 5x5 mosaic and 3x3 Crayola products. It take
 
 **Features/Steps**
 - Automatically goes through each order folder in the 'Orders in Progress' folder
-- Selects the most colorful, most contrast-y images from the folders and crops them to remove the white border
-- Resizes and arranges tiles for seamless reconstruction
+- Selects the most colorful, most contrasty images from the folders and crop them to remove the white border
+- For a 5x5 mosaic, it selects the top 5 colorful images and places them in the coordinates 1, 5, 13, 21, 25. And then randomizes the order of other images. For a 3x3 crayola, only the top 9 pictures are kept, and then they are placed in random order
+- For images that are not round (includes 3D), the tool selects a pastel toned complementary color and sets it as the background in order to present the 'grid feel' in the image
 - Outputs mosaic image file
 
 **Assumptions**
@@ -38,6 +39,4 @@ Created by Tashrique Ahmed
 
 Under the supervision of Cipriano Taylor
 
-@ The Kive Company
-
-https://artkiveapp.com/
+[The Kive Company](https://www.artkiveapp.com)
