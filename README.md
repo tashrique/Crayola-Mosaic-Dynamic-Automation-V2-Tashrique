@@ -44,9 +44,9 @@ When the PSDs are done generating, you can go inside the output folder and open 
 After you are done reviewing the PSDs, don't close them. Keep them open and run the `Finalize` script. This will generate a High-Res JPG for print and a Customer Proof Frame for each of the files that are open in Photoshop currently. It will close every doc afterward.
 
 Watch the following video for a more in-depth explanation - 
-[Part 1](https://www.loom.com/share/13d3a432eadd47dfaccbd3964909f239?sid=49d83cc0-7226-458a-9cb4-607009ccee70)
-[Part 2](https://www.loom.com/share/b209735de59d43b388ea0f1483c3319f?sid=fbacfabc-a26c-4579-a3fd-68f7f77950a4)
-[Part 3](https://www.loom.com/share/cbfd7aa858d1479bb43dd927779a42a0?sid=14eac5a8-0c55-4eb3-a770-92723fd846d9)
+- [Part 1](https://www.loom.com/share/13d3a432eadd47dfaccbd3964909f239?sid=49d83cc0-7226-458a-9cb4-607009ccee70)
+- [Part 2](https://www.loom.com/share/b209735de59d43b388ea0f1483c3319f?sid=fbacfabc-a26c-4579-a3fd-68f7f77950a4)
+- [Part 3](https://www.loom.com/share/cbfd7aa858d1479bb43dd927779a42a0?sid=14eac5a8-0c55-4eb3-a770-92723fd846d9)
 
 
 ## Credits
