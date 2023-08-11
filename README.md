@@ -53,6 +53,6 @@ Watch the following video for a more in-depth explanation -
 
 Created by `Tashrique Ahmed`.
 
-Under the supervision of `Cipriano Taylor`.
+with `Cipriano Taylor`.
 
 [The Kive Company](https://www.artkiveapp.com)
